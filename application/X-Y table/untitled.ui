@@ -1,0 +1,622 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1188</width>
+    <height>517</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <widget class="QWidget" name="formLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1181</width>
+     <height>511</height>
+    </rect>
+   </property>
+   <layout class="QFormLayout" name="formLayout">
+    <item row="0" column="1">
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QTabWidget" name="tabWidget_2">
+        <property name="maximumSize">
+         <size>
+          <width>800</width>
+          <height>501</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>16</pointsize>
+         </font>
+        </property>
+        <property name="currentIndex">
+         <number>1</number>
+        </property>
+        <widget class="QWidget" name="RunningTab_2">
+         <attribute name="title">
+          <string>Run</string>
+         </attribute>
+         <widget class="QLabel" name="label_11">
+          <property name="geometry">
+           <rect>
+            <x>30</x>
+            <y>40</y>
+            <width>71</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>13</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>X Cells</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_12">
+          <property name="geometry">
+           <rect>
+            <x>30</x>
+            <y>80</y>
+            <width>71</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>13</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Y Cells</string>
+          </property>
+         </widget>
+         <widget class="QSpinBox" name="numxcellsSpin_2">
+          <property name="geometry">
+           <rect>
+            <x>90</x>
+            <y>40</y>
+            <width>51</width>
+            <height>22</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QSpinBox" name="numycellsSpin_2">
+          <property name="geometry">
+           <rect>
+            <x>90</x>
+            <y>80</y>
+            <width>51</width>
+            <height>22</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_13">
+          <property name="geometry">
+           <rect>
+            <x>180</x>
+            <y>80</y>
+            <width>101</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>13</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Y pitch(mm)</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_14">
+          <property name="geometry">
+           <rect>
+            <x>180</x>
+            <y>40</y>
+            <width>101</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>13</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>X pitch(mm)</string>
+          </property>
+         </widget>
+         <widget class="QDoubleSpinBox" name="pitchxSpin_2">
+          <property name="geometry">
+           <rect>
+            <x>280</x>
+            <y>40</y>
+            <width>83</width>
+            <height>31</height>
+           </rect>
+          </property>
+          <property name="minimum">
+           <double>-450.000000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>450.000000000000000</double>
+          </property>
+         </widget>
+         <widget class="QDoubleSpinBox" name="pitchySpin_2">
+          <property name="geometry">
+           <rect>
+            <x>280</x>
+            <y>80</y>
+            <width>83</width>
+            <height>31</height>
+           </rect>
+          </property>
+          <property name="minimum">
+           <double>-200.000000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>200.000000000000000</double>
+          </property>
+         </widget>
+         <widget class="QDoubleSpinBox" name="offsetySpin_2">
+          <property name="geometry">
+           <rect>
+            <x>490</x>
+            <y>80</y>
+            <width>83</width>
+            <height>31</height>
+           </rect>
+          </property>
+          <property name="minimum">
+           <double>-200.000000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>200.000000000000000</double>
+          </property>
+         </widget>
+         <widget class="QDoubleSpinBox" name="offsetxSpin_2">
+          <property name="geometry">
+           <rect>
+            <x>490</x>
+            <y>40</y>
+            <width>83</width>
+            <height>31</height>
+           </rect>
+          </property>
+          <property name="minimum">
+           <double>-450.000000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>450.000000000000000</double>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_15">
+          <property name="geometry">
+           <rect>
+            <x>380</x>
+            <y>80</y>
+            <width>101</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>13</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Y offset(mm)</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_16">
+          <property name="geometry">
+           <rect>
+            <x>380</x>
+            <y>40</y>
+            <width>101</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>13</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>X offset(mm)</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="startprofileButton_2">
+          <property name="geometry">
+           <rect>
+            <x>200</x>
+            <y>190</y>
+            <width>131</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Start Profile</string>
+          </property>
+         </widget>
+         <widget class="QCheckBox" name="autocapturecheckBox_2">
+          <property name="geometry">
+           <rect>
+            <x>360</x>
+            <y>200</y>
+            <width>151</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Auto Capture</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+         <widget class="QSlider" name="delaySlider_2">
+          <property name="geometry">
+           <rect>
+            <x>140</x>
+            <y>140</y>
+            <width>300</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="maximum">
+           <number>3000</number>
+          </property>
+          <property name="value">
+           <number>500</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_17">
+          <property name="geometry">
+           <rect>
+            <x>20</x>
+            <y>130</y>
+            <width>111</width>
+            <height>31</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Delay(ms)</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="delayLabel_2">
+          <property name="geometry">
+           <rect>
+            <x>450</x>
+            <y>140</y>
+            <width>81</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>500</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="saveButton_2">
+          <property name="geometry">
+           <rect>
+            <x>360</x>
+            <y>300</y>
+            <width>141</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Save setting</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="loadButton_2">
+          <property name="geometry">
+           <rect>
+            <x>90</x>
+            <y>300</y>
+            <width>141</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Load setting</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="currentcellLabel_2">
+          <property name="geometry">
+           <rect>
+            <x>206</x>
+            <y>240</y>
+            <width>81</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QWidget" name="SettingTab_2">
+         <attribute name="title">
+          <string>Setting</string>
+         </attribute>
+         <widget class="QPushButton" name="refreshButton_2">
+          <property name="geometry">
+           <rect>
+            <x>320</x>
+            <y>52</y>
+            <width>81</width>
+            <height>31</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset theme="SP_BrowserReload">
+            <normaloff>.</normaloff>.</iconset>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="rampxyButton_2">
+          <property name="geometry">
+           <rect>
+            <x>420</x>
+            <y>240</y>
+            <width>131</width>
+            <height>33</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Line X-Y</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="portscomboBox_2">
+          <property name="geometry">
+           <rect>
+            <x>180</x>
+            <y>50</y>
+            <width>121</width>
+            <height>31</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="setzeroButton_2">
+          <property name="geometry">
+           <rect>
+            <x>100</x>
+            <y>360</y>
+            <width>131</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Set Zero</string>
+          </property>
+         </widget>
+         <widget class="QDoubleSpinBox" name="moveystepSpin_2">
+          <property name="geometry">
+           <rect>
+            <x>175</x>
+            <y>180</y>
+            <width>83</width>
+            <height>31</height>
+           </rect>
+          </property>
+          <property name="minimum">
+           <double>-200.000000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>200.000000000000000</double>
+          </property>
+         </widget>
+         <widget class="QCheckBox" name="ycontcheckBox_2">
+          <property name="geometry">
+           <rect>
+            <x>270</x>
+            <y>190</y>
+            <width>141</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>continuous </string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_18">
+          <property name="geometry">
+           <rect>
+            <x>40</x>
+            <y>50</y>
+            <width>113</width>
+            <height>25</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>COM Port:</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="moveyButton_2">
+          <property name="geometry">
+           <rect>
+            <x>420</x>
+            <y>180</y>
+            <width>131</width>
+            <height>33</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Move Y</string>
+          </property>
+         </widget>
+         <widget class="QDoubleSpinBox" name="movexstepSpin_2">
+          <property name="geometry">
+           <rect>
+            <x>175</x>
+            <y>140</y>
+            <width>83</width>
+            <height>31</height>
+           </rect>
+          </property>
+          <property name="minimum">
+           <double>-450.000000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>450.000000000000000</double>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_19">
+          <property name="geometry">
+           <rect>
+            <x>20</x>
+            <y>180</y>
+            <width>113</width>
+            <height>25</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Y Step(mm)</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="opencloseButton_2">
+          <property name="geometry">
+           <rect>
+            <x>420</x>
+            <y>50</y>
+            <width>131</width>
+            <height>31</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Open</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="checked">
+           <bool>false</bool>
+          </property>
+         </widget>
+         <widget class="QCheckBox" name="xcontcheckBox_2">
+          <property name="geometry">
+           <rect>
+            <x>270</x>
+            <y>150</y>
+            <width>141</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>continuous </string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="captureButton_2">
+          <property name="geometry">
+           <rect>
+            <x>340</x>
+            <y>360</y>
+            <width>151</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Capture</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="movtozeroButton_2">
+          <property name="geometry">
+           <rect>
+            <x>270</x>
+            <y>240</y>
+            <width>131</width>
+            <height>33</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Move to Zero</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_20">
+          <property name="geometry">
+           <rect>
+            <x>20</x>
+            <y>140</y>
+            <width>113</width>
+            <height>25</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>X Step(mm)</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="movexButton_2">
+          <property name="geometry">
+           <rect>
+            <x>420</x>
+            <y>140</y>
+            <width>131</width>
+            <height>33</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Move X</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="stopButton_2">
+          <property name="geometry">
+           <rect>
+            <x>70</x>
+            <y>240</y>
+            <width>161</width>
+            <height>33</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Stop movment</string>
+          </property>
+         </widget>
+        </widget>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QPushButton" name="fullviewButton_2">
+        <property name="text">
+         <string>FullView</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QLabel" name="imageLabel">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>40</y>
+     <width>640</width>
+     <height>480</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
