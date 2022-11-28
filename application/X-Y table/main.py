@@ -180,12 +180,13 @@ class mainApp(QtWidgets.QDialog, x_y_ui.Ui_Dialog):
                                             current_time.minute,\
                                             current_time.second,\
                                             current_time.microsecond)            
-            namefile=str(current_time.year)+"_"+\
-                str(current_time.month)+"_"+\
-                str(current_time.day)+" "+\
-                str(current_time.hour)+"_"+\
-                str(current_time.minute)+"_"+\
-                str('{:.2f}'.format(current_time.second+(current_time.microsecond/1000000)))+"_"+\
+            namefile=str('{:02d}'.format(current_time.year))+"_"+\
+                str('{:02d}'.format(current_time.month))+"_"+\
+                str('{:02d}'.format(current_time.day))+" "+\
+                str('{:02d}'.format(current_time.hour))+"_"+\
+                str('{:02d}'.format(current_time.minute))+"_"+\
+                str('{:02d}'.format(current_time.second))+"."+\
+                str('{:02d}'.format(int(current_time.microsecond/10000)))+"_"+\
                 "{:02d}".format(self.capturenamex)+"_"+\
                 "{:02d}".format(self.capturenamey)+".jpg"             
             if(self.autocapturecheckBox.isChecked()):
