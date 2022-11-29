@@ -1,3 +1,4 @@
+from msilib.schema import Dialog
 from pickle import FALSE
 from tokenize import String
 from turtle import isvisible
@@ -8,6 +9,8 @@ from PyQt5.QtSerialPort import QSerialPort, QSerialPortInfo
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, Qt, QThread,QByteArray
 from PyQt5.QtGui import QPixmap
 import sys
+
+from matplotlib.backend_bases import MouseEvent
 import x_y_ui_large as x_y_ui
 import cv2
 import numpy as np
@@ -15,37 +18,35 @@ import datetime
 import os
 
 
-
+class Qlabel_Clickable(QtWidgets.QLabel):
+    clicked=pyqtSignal(QtGui.QMouseEvent)
+    def __init(self,parent=None):
+        QtWidgets.QLabel.__init__(self, parent=parent)
+    def mousePressEvent(self, ev):
+        self.clicked.emit(ev)
 
 class VideoThread(QThread):
     change_pixmap_signal = pyqtSignal(np.ndarray)
     disablebutton_signal = pyqtSignal(np.ndarray)
-    def __init__(self):
+    def __init__(self,cap):
         super().__init__()
         self._run_flag = True
-
+        self.cap=cap
     def run(self):
         # capture from web cam
-        cap  = cv2.VideoCapture(0) 
-        if(not cap.isOpened()):
+        if(not self.cap.isOpened()):
             dummy=np.array(0)
             self.disablebutton_signal.emit(dummy)
-            cap.release()
+            self.cap.release()
             self.stop()
         else:
-            codec = 0x47504A4D  # MJPG
-            cap.set(cv2.CAP_PROP_FPS, 30.0)
-            cap.set(cv2.CAP_PROP_FOURCC, codec)
-            cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
-            cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
-            cap.set(cv2.CAP_PROP_AUTO_EXPOSURE,0.9)
             while self._run_flag:
-                ret, cv_img = cap.read()
+                ret, cv_img = self.cap.read()
                 ret=True
                 if ret:
                     self.change_pixmap_signal.emit(cv_img)
             # shut down capture system
-            cap.release()
+            self.cap.release()
 
     def stop(self):
         """Sets run flag to False and waits for thread to finish"""
@@ -57,15 +58,22 @@ class mainApp(QtWidgets.QDialog, x_y_ui.Ui_Dialog):
     def __init__(self, parent=None) :
         super(mainApp,self).__init__(parent)
         self.setupUi(self)
+
         icons = sorted([attr for attr in dir(QStyle) if attr.startswith("SP_")])
         name=icons[6]
         pixmapi = getattr(QStyle, name)
         icon = self.style().standardIcon(pixmapi)
         self.refreshButton.setIcon(icon)
 
+        
         self.disply_width = 640
-        self.display_height = 480
-        self.imageLabel.resize(self.disply_width, self.display_height)
+        self.display_height = 360
+
+        self.imageLabel=Qlabel_Clickable(self)
+        self.imageLabel.setGeometry(600, 35, self.disply_width, self.display_height)
+        self.imageLabel.setText("")
+        self.imageLabel.clicked.connect(self.on_imageLabel_clicked)
+        # self.imageLabel.resize(self.disply_width, self.display_height)
 
         self.fullviewDialog = None
         self.fullviewDialog = QtWidgets.QDialog(self)
@@ -79,14 +87,29 @@ class mainApp(QtWidgets.QDialog, x_y_ui.Ui_Dialog):
         self.portscomboBox.addItems([ port.portName() for port in QSerialPortInfo().availablePorts() ])        
         self.m_serial.readyRead.connect(self.readData)  
 
-        self.thread = VideoThread()
+        self.cap  = cv2.VideoCapture(0) 
+        codec = 0x47504A4D  # MJPG
+        self.cap.set(cv2.CAP_PROP_FPS, 30.0)
+        self.cap.set(cv2.CAP_PROP_FOURCC, codec)
+        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
+        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
+        self.cap.set(cv2.CAP_PROP_AUTO_EXPOSURE,0.9)
+
+        self.thread = VideoThread(self.cap)
         self.thread.change_pixmap_signal.connect(self.update_image)
         self.thread.disablebutton_signal.connect(self.disablecapture)
         self.thread.start()
-        self.capturetrig=False
-        
-        self.getposition=True
+        self.exposureSlider.setValue(int(self.cap.get(cv2.CAP_PROP_EXPOSURE)))  
+        self.exposureSlider.valueChanged.connect(self.on_exposureSlider_valueChanged)
+        self.exposureLabel.setText(str(self.exposureSlider.value()))        
+        self.gainSlider.setValue(int(self.cap.get(cv2.CAP_PROP_GAIN)))  
+        self.gainSlider.valueChanged.connect(self.on_gainSlider_valueChanged)
+        self.gainLabel.setText(str(self.gainSlider.value()))        
+        self.autoexposurecheckBox.clicked.connect(self.on_autoexposurecheckBox_clicekd)
+        self.delayLabel.setText(str(self.delaySlider.value())) 
 
+        self.capturetrig=False
+        self.getposition=True
         self.capturenamex=0
         self.capturenamey=0
         self.bufferstr=""
@@ -94,6 +117,26 @@ class mainApp(QtWidgets.QDialog, x_y_ui.Ui_Dialog):
         # self.iscapture=False
         self.isprofilerunning=False
         self.folderimage=""
+        self.mousepositionx=0
+        self.mousepositiony=0
+
+    def on_imageLabel_clicked(self,ev):
+        print("click image")   
+        print(ev.pos().x(),ev.pos().y())
+        self.mousepositionx=ev.pos().x()
+        self.mousepositiony=ev.pos().y()
+
+    def on_autoexposurecheckBox_clicekd(self):
+        if(self.autoexposurecheckBox.isChecked()):
+            self.cap.set(cv2.CAP_PROP_AUTO_EXPOSURE,0.9)
+        else:
+            self.cap.set(cv2.CAP_PROP_EXPOSURE,self.exposureSlider.value()) 
+
+    def on_gainSlider_valueChanged(self):
+        self.cap.set(cv2.CAP_PROP_GAIN,self.gainSlider.value())  
+
+    def on_exposureSlider_valueChanged(self):
+        self.cap.set(cv2.CAP_PROP_EXPOSURE,self.exposureSlider.value())          
 
     def readData(self):
         data = self.m_serial.readAll()
@@ -113,10 +156,7 @@ class mainApp(QtWidgets.QDialog, x_y_ui.Ui_Dialog):
         if(self.framestate==2):
             self.framestate=0
             deliminatedstr=receivedframe.split(',')
-            # deliminatedstr[-1]=deliminatedstr[-1][:-1]
-            # print("deliminatedstr:")
-            # for id,x in enumerate(deliminatedstr):
-            #     print(str(id)+":"+x)
+
             if(deliminatedstr[0]=="@trigcapture"):
                 self.capturenamex=eval(deliminatedstr[1])
                 self.capturenamey=eval(deliminatedstr[2])
@@ -143,7 +183,6 @@ class mainApp(QtWidgets.QDialog, x_y_ui.Ui_Dialog):
                 self.writeData(res)                          
             # self.bufferstr=""
 
-   
     def writeData(self, data):        
         self.m_serial.write(data)
     
@@ -162,11 +201,20 @@ class mainApp(QtWidgets.QDialog, x_y_ui.Ui_Dialog):
     @QtCore.pyqtSlot(np.ndarray)
     def update_image(self, cv_img):
         """Updates the image_label with a new opencv image"""
-        cv_qimage = self.convert_cv_image(cv_img)
+        cv_image_scale=cv2.resize(cv_img,[self.disply_width, self.display_height])
+        if(self.crosscheckBox.isChecked()):
+            cv2.line(img=cv_image_scale, pt1=(0, self.mousepositiony), pt2=(self.disply_width, self.mousepositiony), color=(0, 0, 255), thickness=1, lineType=8, shift=0)
+            cv2.line(img=cv_image_scale, pt1=(self.mousepositionx, 0), pt2=(self.mousepositionx,self.display_height), color=(0, 0, 255), thickness=1, lineType=8, shift=0)   
+        cv_qimage = self.convert_cv_image(cv_image_scale)
         p = cv_qimage.scaled(self.disply_width, self.display_height, Qt.KeepAspectRatio)
         self.imageLabel.setPixmap(QPixmap.fromImage(p))
+
         if self.fullviewDialog.isVisible():
-            self.fullviewDialog.fullviewLabel.setPixmap(QPixmap.fromImage(cv_qimage))
+            if(self.crosscheckBox.isChecked()):
+                cv2.line(img=cv_img, pt1=(0, self.mousepositiony*3), pt2=(self.disply_width*3, self.mousepositiony*3), color=(0, 0, 255), thickness=1, lineType=8, shift=0)
+                cv2.line(img=cv_img, pt1=(self.mousepositionx*3, 0), pt2=(self.mousepositionx*3,self.display_height*3), color=(0, 0, 255), thickness=1, lineType=8, shift=0)  
+            cv_qimage_full = self.convert_cv_image(cv_img)
+            self.fullviewDialog.fullviewLabel.setPixmap(QPixmap.fromImage(cv_qimage_full))
     
     def convert_cv_image(self, cv_img):
         """Convert from an opencv image to QPixmap"""

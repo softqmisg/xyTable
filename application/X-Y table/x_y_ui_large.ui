@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1267</width>
-    <height>519</height>
+    <height>623</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -40,7 +40,7 @@
     </font>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="RunningTab">
     <attribute name="title">
@@ -299,19 +299,6 @@
       <string>Delay(ms)</string>
      </property>
     </widget>
-    <widget class="QLabel" name="delayLabel">
-     <property name="geometry">
-      <rect>
-       <x>450</x>
-       <y>140</y>
-       <width>81</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>500</string>
-     </property>
-    </widget>
     <widget class="QPushButton" name="saveButton">
      <property name="geometry">
       <rect>
@@ -328,7 +315,7 @@
     <widget class="QPushButton" name="loadButton">
      <property name="geometry">
       <rect>
-       <x>90</x>
+       <x>190</x>
        <y>300</y>
        <width>141</width>
        <height>41</height>
@@ -355,13 +342,26 @@
      <property name="geometry">
       <rect>
        <x>30</x>
-       <y>190</y>
+       <y>300</y>
        <width>131</width>
        <height>41</height>
       </rect>
      </property>
      <property name="text">
       <string>Select Folder</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="delayLabel">
+     <property name="geometry">
+      <rect>
+       <x>470</x>
+       <y>140</y>
+       <width>51</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
      </property>
     </widget>
    </widget>
@@ -525,19 +525,6 @@
       <bool>false</bool>
      </property>
     </widget>
-    <widget class="QCheckBox" name="xcontcheckBox">
-     <property name="geometry">
-      <rect>
-       <x>270</x>
-       <y>150</y>
-       <width>141</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>continuous </string>
-     </property>
-    </widget>
     <widget class="QPushButton" name="captureButton">
      <property name="geometry">
       <rect>
@@ -693,13 +680,145 @@
     <string/>
    </property>
   </widget>
+  <widget class="QCheckBox" name="crosscheckBox">
+   <property name="geometry">
+    <rect>
+     <x>1160</x>
+     <y>10</y>
+     <width>81</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>CrossLine</string>
+   </property>
+  </widget>
+  <widget class="QSlider" name="exposureSlider">
+   <property name="geometry">
+    <rect>
+     <x>710</x>
+     <y>520</y>
+     <width>160</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="minimum">
+    <number>-13</number>
+   </property>
+   <property name="maximum">
+    <number>-1</number>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="QLabel" name="exposureLabel">
+   <property name="geometry">
+    <rect>
+     <x>890</x>
+     <y>520</y>
+     <width>51</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="autoexposurecheckBox">
+   <property name="geometry">
+    <rect>
+     <x>560</x>
+     <y>520</y>
+     <width>51</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Auto</string>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="gammaLabel">
+   <property name="geometry">
+    <rect>
+     <x>410</x>
+     <y>520</y>
+     <width>51</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="gainLabel">
+   <property name="geometry">
+    <rect>
+     <x>890</x>
+     <y>560</y>
+     <width>51</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QSlider" name="gainSlider">
+   <property name="geometry">
+    <rect>
+     <x>710</x>
+     <y>560</y>
+     <width>160</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="minimum">
+    <number>0</number>
+   </property>
+   <property name="maximum">
+    <number>100</number>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="QLabel" name="delayLabel_3">
+   <property name="geometry">
+    <rect>
+     <x>620</x>
+     <y>560</y>
+     <width>51</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Gain</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="delayLabel_4">
+   <property name="geometry">
+    <rect>
+     <x>620</x>
+     <y>520</y>
+     <width>51</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Exposure</string>
+   </property>
+  </widget>
  </widget>
  <tabstops>
   <tabstop>portscomboBox</tabstop>
   <tabstop>refreshButton</tabstop>
   <tabstop>opencloseButton</tabstop>
   <tabstop>movexstepSpin</tabstop>
-  <tabstop>xcontcheckBox</tabstop>
+  <tabstop>crosscheckBox</tabstop>
   <tabstop>movexButton</tabstop>
   <tabstop>moveystepSpin</tabstop>
   <tabstop>ycontcheckBox</tabstop>
@@ -738,6 +857,54 @@
     <hint type="destinationlabel">
      <x>492</x>
      <y>184</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>exposureSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>exposureLabel</receiver>
+   <slot>setNum(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>789</x>
+     <y>550</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>915</x>
+     <y>550</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>autoexposurecheckBox</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>exposureSlider</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>585</x>
+     <y>550</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>789</x>
+     <y>550</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gainSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>gainLabel</receiver>
+   <slot>setNum(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>789</x>
+     <y>570</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>915</x>
+     <y>570</y>
     </hint>
    </hints>
   </connection>
