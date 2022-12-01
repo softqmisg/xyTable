@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'x_y_ui_large.ui'
+# Form implementation generated from reading ui file '.\x_y_ui_large.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -140,7 +140,7 @@ class Ui_Dialog(object):
         self.portscomboBox.setGeometry(QtCore.QRect(180, 50, 121, 31))
         self.portscomboBox.setObjectName("portscomboBox")
         self.setzeroButton = QtWidgets.QPushButton(self.SettingTab)
-        self.setzeroButton.setGeometry(QtCore.QRect(100, 360, 131, 41))
+        self.setzeroButton.setGeometry(QtCore.QRect(220, 350, 131, 41))
         self.setzeroButton.setObjectName("setzeroButton")
         self.moveystepSpin = QtWidgets.QDoubleSpinBox(self.SettingTab)
         self.moveystepSpin.setGeometry(QtCore.QRect(175, 180, 83, 31))
@@ -169,9 +169,6 @@ class Ui_Dialog(object):
         self.opencloseButton.setCheckable(True)
         self.opencloseButton.setChecked(False)
         self.opencloseButton.setObjectName("opencloseButton")
-        self.captureButton = QtWidgets.QPushButton(self.SettingTab)
-        self.captureButton.setGeometry(QtCore.QRect(340, 360, 151, 41))
-        self.captureButton.setObjectName("captureButton")
         self.movtozeroButton = QtWidgets.QPushButton(self.SettingTab)
         self.movtozeroButton.setGeometry(QtCore.QRect(270, 240, 131, 33))
         self.movtozeroButton.setObjectName("movtozeroButton")
@@ -184,6 +181,9 @@ class Ui_Dialog(object):
         self.stopButton = QtWidgets.QPushButton(self.SettingTab)
         self.stopButton.setGeometry(QtCore.QRect(70, 240, 161, 33))
         self.stopButton.setObjectName("stopButton")
+        self.xcontcheckBox = QtWidgets.QCheckBox(self.SettingTab)
+        self.xcontcheckBox.setGeometry(QtCore.QRect(270, 150, 141, 17))
+        self.xcontcheckBox.setObjectName("xcontcheckBox")
         self.tabWidget.addTab(self.SettingTab, "")
         self.imageLabel = QtWidgets.QLabel(Dialog)
         self.imageLabel.setGeometry(QtCore.QRect(600, 30, 640, 480))
@@ -249,9 +249,12 @@ class Ui_Dialog(object):
         self.delayLabel_4 = QtWidgets.QLabel(Dialog)
         self.delayLabel_4.setGeometry(QtCore.QRect(620, 520, 51, 21))
         self.delayLabel_4.setObjectName("delayLabel_4")
+        self.captureButton = QtWidgets.QPushButton(Dialog)
+        self.captureButton.setGeometry(QtCore.QRect(1040, 530, 151, 41))
+        self.captureButton.setObjectName("captureButton")
 
         self.retranslateUi(Dialog)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         self.delaySlider.valueChanged['int'].connect(self.delayLabel.setNum)
         self.exposureSlider.valueChanged['int'].connect(self.exposureLabel.setNum)
         self.autoexposurecheckBox.clicked['bool'].connect(self.exposureSlider.setDisabled)
@@ -307,11 +310,11 @@ class Ui_Dialog(object):
         self.moveyButton.setText(_translate("Dialog", "Move Y"))
         self.label_3.setText(_translate("Dialog", "Y Step(mm)"))
         self.opencloseButton.setText(_translate("Dialog", "Open"))
-        self.captureButton.setText(_translate("Dialog", "Capture"))
         self.movtozeroButton.setText(_translate("Dialog", "Move to Zero"))
         self.label.setText(_translate("Dialog", "X Step(mm)"))
         self.movexButton.setText(_translate("Dialog", "Move X"))
         self.stopButton.setText(_translate("Dialog", "Stop movment"))
+        self.xcontcheckBox.setText(_translate("Dialog", "continuous "))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.SettingTab), _translate("Dialog", "Setting"))
         self.fullviewButton.setText(_translate("Dialog", "FullView"))
         self.label_11.setText(_translate("Dialog", "X(mm):"))
@@ -320,3 +323,4 @@ class Ui_Dialog(object):
         self.autoexposurecheckBox.setText(_translate("Dialog", "Auto"))
         self.delayLabel_3.setText(_translate("Dialog", "Gain"))
         self.delayLabel_4.setText(_translate("Dialog", "Exposure"))
+        self.captureButton.setText(_translate("Dialog", "Capture"))

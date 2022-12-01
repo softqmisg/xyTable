@@ -2,28 +2,49 @@ from msilib.schema import Dialog
 from pickle import FALSE
 from tokenize import String
 from turtle import isvisible
+from matplotlib.backend_bases import MouseEvent
+
+
 from PyQt5 import QtCore, QtGui, QtWidgets,uic
 import PyQt5
 from PyQt5.QtWidgets import QApplication,QStyle,QMessageBox,QFileDialog
 from PyQt5.QtSerialPort import QSerialPort, QSerialPortInfo
-from PyQt5.QtCore import pyqtSignal, pyqtSlot, Qt, QThread,QByteArray
+from PyQt5.QtCore import pyqtSignal, pyqtSlot, Qt, QThread,QByteArray,QEvent,QObject,QPoint
 from PyQt5.QtGui import QPixmap
 import sys
-
-from matplotlib.backend_bases import MouseEvent
-import x_y_ui_large as x_y_ui
 import cv2
 import numpy as np
 import datetime
 import os
+import x_y_ui_large as x_y_ui
 
+class HoverTracker(QObject):
+    positionChanged = pyqtSignal(QPoint)
+    def __init__(self, widget):
+        super().__init__(widget)
+        self._widget = widget
+        self.widget.setMouseTracking(True)
+        self.widget.installEventFilter(self)
+
+    @property
+    def widget(self):
+        return self._widget
+
+    def eventFilter(self, obj, event):
+        if obj is self.widget and event.type() == QEvent.MouseMove:
+            self.positionChanged.emit(event.pos())
+        return super().eventFilter(obj, event)
 
 class Qlabel_Clickable(QtWidgets.QLabel):
     clicked=pyqtSignal(QtGui.QMouseEvent)
-    def __init(self,parent=None):
+    enter=pyqtSignal(QtGui.QEnterEvent)
+    def __init__(self,parent=None):
         QtWidgets.QLabel.__init__(self, parent=parent)
+
     def mousePressEvent(self, ev):
         self.clicked.emit(ev)
+    def enterEvent(self,ev):
+        self.enter.emit(ev)
 
 class VideoThread(QThread):
     change_pixmap_signal = pyqtSignal(np.ndarray)
@@ -34,19 +55,13 @@ class VideoThread(QThread):
         self.cap=cap
     def run(self):
         # capture from web cam
-        if(not self.cap.isOpened()):
-            dummy=np.array(0)
-            self.disablebutton_signal.emit(dummy)
-            self.cap.release()
-            self.stop()
-        else:
-            while self._run_flag:
-                ret, cv_img = self.cap.read()
-                ret=True
-                if ret:
-                    self.change_pixmap_signal.emit(cv_img)
-            # shut down capture system
-            self.cap.release()
+        while self._run_flag:
+            ret, cv_img = self.cap.read()
+            ret=True
+            if ret:
+                self.change_pixmap_signal.emit(cv_img)
+        # shut down capture system
+        self.cap.release()
 
     def stop(self):
         """Sets run flag to False and waits for thread to finish"""
@@ -73,7 +88,9 @@ class mainApp(QtWidgets.QDialog, x_y_ui.Ui_Dialog):
         self.imageLabel.setGeometry(600, 35, self.disply_width, self.display_height)
         self.imageLabel.setText("")
         self.imageLabel.clicked.connect(self.on_imageLabel_clicked)
-        # self.imageLabel.resize(self.disply_width, self.display_height)
+        self.imageLabel.enter.connect(self.on_imageLabel_enter)
+        hover_tracking=HoverTracker(self.imageLabel)
+        hover_tracking.positionChanged.connect(self.on_position_changed)
 
         self.fullviewDialog = None
         self.fullviewDialog = QtWidgets.QDialog(self)
@@ -86,27 +103,37 @@ class mainApp(QtWidgets.QDialog, x_y_ui.Ui_Dialog):
         self.m_serial=QSerialPort()
         self.portscomboBox.addItems([ port.portName() for port in QSerialPortInfo().availablePorts() ])        
         self.m_serial.readyRead.connect(self.readData)  
-
-        self.cap  = cv2.VideoCapture(0) 
-        codec = 0x47504A4D  # MJPG
-        self.cap.set(cv2.CAP_PROP_FPS, 30.0)
-        self.cap.set(cv2.CAP_PROP_FOURCC, codec)
-        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
-        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
-        self.cap.set(cv2.CAP_PROP_AUTO_EXPOSURE,0.9)
-
-        self.thread = VideoThread(self.cap)
-        self.thread.change_pixmap_signal.connect(self.update_image)
-        self.thread.disablebutton_signal.connect(self.disablecapture)
-        self.thread.start()
-        self.exposureSlider.setValue(int(self.cap.get(cv2.CAP_PROP_EXPOSURE)))  
-        self.exposureSlider.valueChanged.connect(self.on_exposureSlider_valueChanged)
-        self.exposureLabel.setText(str(self.exposureSlider.value()))        
-        self.gainSlider.setValue(int(self.cap.get(cv2.CAP_PROP_GAIN)))  
-        self.gainSlider.valueChanged.connect(self.on_gainSlider_valueChanged)
-        self.gainLabel.setText(str(self.gainSlider.value()))        
-        self.autoexposurecheckBox.clicked.connect(self.on_autoexposurecheckBox_clicekd)
         self.delayLabel.setText(str(self.delaySlider.value())) 
+
+        self.cap  = cv2.VideoCapture(0)#,cv2.CAP_DSHOW) 
+        if(not self.cap.isOpened()):
+            self.captureButton.setEnabled(False)
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Warning)
+            msg.setText("Camera problem")
+            msg.setInformativeText("Camera is not found")
+            msg.setWindowTitle("Warning")
+            msg.setStandardButtons(QMessageBox.Ok )
+            msg.exec_()            
+            self.cap.release()
+        else :
+            codec = 0x47504A4D  # MJPG
+            self.cap.set(cv2.CAP_PROP_FPS, 30.0)
+            self.cap.set(cv2.CAP_PROP_FOURCC, codec)
+            self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
+            self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
+            self.cap.set(cv2.CAP_PROP_AUTO_EXPOSURE,0.9)
+
+            self.thread = VideoThread(self.cap)
+            self.thread.change_pixmap_signal.connect(self.update_image)
+            self.thread.start()
+            self.exposureSlider.setValue(int(self.cap.get(cv2.CAP_PROP_EXPOSURE)))  
+            self.exposureSlider.valueChanged.connect(self.on_exposureSlider_valueChanged)
+            self.exposureLabel.setText(str(self.exposureSlider.value()))        
+            self.gainSlider.setValue(int(self.cap.get(cv2.CAP_PROP_GAIN)))  
+            self.gainSlider.valueChanged.connect(self.on_gainSlider_valueChanged)
+            self.gainLabel.setText(str(self.gainSlider.value()))        
+            self.autoexposurecheckBox.clicked.connect(self.on_autoexposurecheckBox_clicekd)
 
         self.capturetrig=False
         self.getposition=True
@@ -116,27 +143,15 @@ class mainApp(QtWidgets.QDialog, x_y_ui.Ui_Dialog):
         self.framestate=0
         # self.iscapture=False
         self.isprofilerunning=False
-        self.folderimage=""
+        self.folderimage="."
         self.mousepositionx=0
         self.mousepositiony=0
+        self.mouseclickedx=0
+        self.mouseclickedy=0
 
-    def on_imageLabel_clicked(self,ev):
-        print("click image")   
-        print(ev.pos().x(),ev.pos().y())
-        self.mousepositionx=ev.pos().x()
-        self.mousepositiony=ev.pos().y()
+        self.singlecapture=False
+        self.clickedcross=False
 
-    def on_autoexposurecheckBox_clicekd(self):
-        if(self.autoexposurecheckBox.isChecked()):
-            self.cap.set(cv2.CAP_PROP_AUTO_EXPOSURE,0.9)
-        else:
-            self.cap.set(cv2.CAP_PROP_EXPOSURE,self.exposureSlider.value()) 
-
-    def on_gainSlider_valueChanged(self):
-        self.cap.set(cv2.CAP_PROP_GAIN,self.gainSlider.value())  
-
-    def on_exposureSlider_valueChanged(self):
-        self.cap.set(cv2.CAP_PROP_EXPOSURE,self.exposureSlider.value())          
 
     def readData(self):
         data = self.m_serial.readAll()
@@ -186,38 +201,20 @@ class mainApp(QtWidgets.QDialog, x_y_ui.Ui_Dialog):
     def writeData(self, data):        
         self.m_serial.write(data)
     
-    @QtCore.pyqtSlot(np.ndarray)
-    def disablecapture(self,dummy):
-        self.captureButton.setEnabled(False)
-        msg = QMessageBox()
-        msg.setIcon(QMessageBox.Warning)
-        msg.setText("Camera problem")
-        msg.setInformativeText("Camera is not found")
-        msg.setWindowTitle("Warning")
-        msg.setStandardButtons(QMessageBox.Ok )
-        msg.exec_()
-        self.close()
+    # @QtCore.pyqtSlot(np.ndarray)
+    # def disablecapture(self,dummy):
+    #     self.captureButton.setEnabled(False)
+    #     msg = QMessageBox()
+    #     msg.setIcon(QMessageBox.Warning)
+    #     msg.setText("Camera problem")
+    #     msg.setInformativeText("Camera is not found")
+    #     msg.setWindowTitle("Warning")
+    #     msg.setStandardButtons(QMessageBox.Ok )
+    #     msg.exec_()
 
     @QtCore.pyqtSlot(np.ndarray)
     def update_image(self, cv_img):
         """Updates the image_label with a new opencv image"""
-        cv_image_scale=cv2.resize(cv_img,[self.disply_width, self.display_height])
-        if(self.crosscheckBox.isChecked()):
-            cv2.line(img=cv_image_scale, pt1=(0, self.mousepositiony), pt2=(self.disply_width, self.mousepositiony), color=(0, 0, 255), thickness=1, lineType=8, shift=0)
-            cv2.line(img=cv_image_scale, pt1=(self.mousepositionx, 0), pt2=(self.mousepositionx,self.display_height), color=(0, 0, 255), thickness=1, lineType=8, shift=0)   
-        cv_qimage = self.convert_cv_image(cv_image_scale)
-        p = cv_qimage.scaled(self.disply_width, self.display_height, Qt.KeepAspectRatio)
-        self.imageLabel.setPixmap(QPixmap.fromImage(p))
-
-        if self.fullviewDialog.isVisible():
-            if(self.crosscheckBox.isChecked()):
-                cv2.line(img=cv_img, pt1=(0, self.mousepositiony*3), pt2=(self.disply_width*3, self.mousepositiony*3), color=(0, 0, 255), thickness=1, lineType=8, shift=0)
-                cv2.line(img=cv_img, pt1=(self.mousepositionx*3, 0), pt2=(self.mousepositionx*3,self.display_height*3), color=(0, 0, 255), thickness=1, lineType=8, shift=0)  
-            cv_qimage_full = self.convert_cv_image(cv_img)
-            self.fullviewDialog.fullviewLabel.setPixmap(QPixmap.fromImage(cv_qimage_full))
-    
-    def convert_cv_image(self, cv_img):
-        """Convert from an opencv image to QPixmap"""
         if(self.capturetrig):
             self.capturetrig=False
             current_time = datetime.datetime.now()
@@ -236,15 +233,38 @@ class mainApp(QtWidgets.QDialog, x_y_ui.Ui_Dialog):
                 str('{:02d}'.format(current_time.second))+"."+\
                 str('{:02d}'.format(int(current_time.microsecond/10000)))+"_"+\
                 "{:02d}".format(self.capturenamex)+"_"+\
-                "{:02d}".format(self.capturenamey)+".jpg"             
-            if(self.autocapturecheckBox.isChecked()):
-                cv2.imwrite(self.folderimage+"/"+namefile, cv_img,[int(cv2.IMWRITE_JPEG_QUALITY), 100])
-            # if(self.iscapture):
-            #     self.iscapture=False
+                "{:02d}".format(self.capturenamey)+".jpg" 
+            namefile =self.folderimage+"/"+namefile
+            if(self.autocapturecheckBox.isChecked() or self.singlecapture):
+                self.singlecapture=False
+                cv2.imwrite(namefile, cv_img,[int(cv2.IMWRITE_JPEG_QUALITY), 100])        
             cmd="resumeprofile\n"
             res=bytes(cmd, 'utf-8')
             self.writeData(res)
-            # print(">>>>>>>>>>>>>>>>resumeprofile")
+
+        cv_image_scale=cv2.resize(cv_img,[self.disply_width, self.display_height])
+        if(self.crosscheckBox.isChecked()):
+            if(self.clickedcross):
+                cv2.line(img=cv_image_scale, pt1=(0, self.mouseclickedy), pt2=(self.disply_width, self.mouseclickedy), color=(0, 0, 255), thickness=1, lineType=8, shift=0)
+                cv2.line(img=cv_image_scale, pt1=(self.mouseclickedx, 0), pt2=(self.mouseclickedx,self.display_height), color=(0, 0, 255), thickness=1, lineType=8, shift=0)   
+            else:
+                cv2.line(img=cv_image_scale, pt1=(0, self.mousepositiony), pt2=(self.disply_width, self.mousepositiony), color=(0,255, 255), thickness=1, lineType=8, shift=0)
+                cv2.line(img=cv_image_scale, pt1=(self.mousepositionx, 0), pt2=(self.mousepositionx,self.display_height), color=(0,255,  255), thickness=1, lineType=8, shift=0)   
+        else:
+            self.clickedcross=False
+
+        cv_qimage = self.convert_cv_image(cv_image_scale)
+        self.imageLabel.setPixmap(QPixmap.fromImage(cv_qimage))
+
+        if self.fullviewDialog.isVisible():
+            if(self.crosscheckBox.isChecked()):
+                cv2.line(img=cv_img, pt1=(0, self.mouseclickedy*3), pt2=(self.disply_width*3, self.mouseclickedy*3), color=(0, 0, 255), thickness=1, lineType=8, shift=0)
+                cv2.line(img=cv_img, pt1=(self.mouseclickedx*3, 0), pt2=(self.mouseclickedx*3,self.display_height*3), color=(0, 0, 255), thickness=1, lineType=8, shift=0)  
+            cv_qimage_full = self.convert_cv_image(cv_img)
+            self.fullviewDialog.fullviewLabel.setPixmap(QPixmap.fromImage(cv_qimage_full))
+   
+    def convert_cv_image(self, cv_img):
+        """Convert from an opencv image to QPixmap"""
         rgb_image = cv2.cvtColor(cv_img, cv2.COLOR_BGR2BGRA)    
         h, w, ch = rgb_image.shape
         bytes_per_line = ch * w
@@ -255,10 +275,38 @@ class mainApp(QtWidgets.QDialog, x_y_ui.Ui_Dialog):
     def on_fullviewButton_clicked(self):
         self.fullviewDialog.setVisible(True)
         self.fullviewDialog.show()
-                
+
+    def on_imageLabel_clicked(self,ev):
+        self.mouseclickedx=ev.pos().x()
+        self.mouseclickedy=ev.pos().y()
+        self.clickedcross=True
+
+    def on_imageLabel_enter(self,ev):
+        # print(ev.pos().x(),ev.pos().y())
+        pass
+
+    @QtCore.pyqtSlot(QPoint)
+    def on_position_changed(self, p):
+        self.mousepositionx=p.x()
+        self.mousepositiony=p.y()
+
+    def on_autoexposurecheckBox_clicekd(self):
+        if(self.autoexposurecheckBox.isChecked()):
+            self.cap.set(cv2.CAP_PROP_AUTO_EXPOSURE,0.9)
+        else:
+            self.cap.set(cv2.CAP_PROP_EXPOSURE,self.exposureSlider.value()) 
+
+    def on_gainSlider_valueChanged(self):
+        self.cap.set(cv2.CAP_PROP_GAIN,self.gainSlider.value())  
+
+    def on_exposureSlider_valueChanged(self):
+        self.cap.set(cv2.CAP_PROP_EXPOSURE,self.exposureSlider.value())   
+
     @QtCore.pyqtSlot()
     def on_captureButton_clicked(self):
         self.capturetrig=True
+        self.singlecapture=True
+        print("clicked capture")
     
     @QtCore.pyqtSlot()    
     def on_refreshButton_clicked(self):

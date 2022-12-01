@@ -40,7 +40,7 @@
     </font>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="RunningTab">
     <attribute name="title">
@@ -412,8 +412,8 @@
     <widget class="QPushButton" name="setzeroButton">
      <property name="geometry">
       <rect>
-       <x>100</x>
-       <y>360</y>
+       <x>220</x>
+       <y>350</y>
        <width>131</width>
        <height>41</height>
       </rect>
@@ -525,19 +525,6 @@
       <bool>false</bool>
      </property>
     </widget>
-    <widget class="QPushButton" name="captureButton">
-     <property name="geometry">
-      <rect>
-       <x>340</x>
-       <y>360</y>
-       <width>151</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Capture</string>
-     </property>
-    </widget>
     <widget class="QPushButton" name="movtozeroButton">
      <property name="geometry">
       <rect>
@@ -588,6 +575,19 @@
      </property>
      <property name="text">
       <string>Stop movment</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="xcontcheckBox">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>150</y>
+       <width>141</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>continuous </string>
      </property>
     </widget>
    </widget>
@@ -810,6 +810,19 @@
    </property>
    <property name="text">
     <string>Exposure</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="captureButton">
+   <property name="geometry">
+    <rect>
+     <x>1040</x>
+     <y>530</y>
+     <width>151</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Capture</string>
    </property>
   </widget>
  </widget>
