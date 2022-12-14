@@ -1,0 +1,3 @@
+pyinstaller --windowed --noconsole --onefile bmi.py -n bmi.exe
+
+pyuic5 untitled.ui -o ui.py
